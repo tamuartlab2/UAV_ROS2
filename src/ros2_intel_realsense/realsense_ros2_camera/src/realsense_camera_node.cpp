@@ -492,7 +492,7 @@ private:
           updateStreamCalibData(video_profile);
         }
       }
-      _color_begin = std::chrono::steady_clock::now();  //270323 Kangneoung
+
       auto frame_callback = [this](rs2::frame frame)
         {
           // We compute a ROS timestamp which is based on an initial ROS time at point of first
@@ -532,30 +532,9 @@ private:
                 "Frameset contain %s frame. frame_number: %llu ; frame_TS: %f ; ros_TS(NSec): %lu",
                 rs2_stream_to_string(stream_type), frame.get_frame_number(),
                 frame.get_timestamp(), t.nanoseconds());
-              //publishFrame(f, t);
+              publishFrame(f, t);
             }
 
-
-            //270323 Kangneoung
-            if (is_color_frame_arrived&& is_depth_frame_arrived) {
-              RCLCPP_DEBUG(logger_, "publishColorTopic(...)");
-              rs2::frameset color_frame_set = frame;
-              rs2::frame color_frame = color_frame_set.get_color_frame();
-              publishFrame(color_frame, t);
-              std::cout<< " color published " << std::endl;
-              std::chrono::steady_clock::time_point color_end = std::chrono::steady_clock::now();
-              //std::cout<<"Pub Time difference = "<<std::chrono::duration_cast<std::chrono::microseconds>(color_end-_color_begin).count()<<"[us]"<<std::endl;
-              _color_begin = color_end;
-            }
-            //270323 Kangneoung
-            if (is_color_frame_arrived&&is_depth_frame_arrived) {
-              RCLCPP_DEBUG(logger_, "publishDepthTopic(...)");
-              rs2::frameset depth_frame_set = frame;
-              rs2::frame depth_frame = depth_frame_set.get_depth_frame();
-              publishFrame(depth_frame, t);
-              std::cout<< " depth published " << std::endl;
-            }
-            
             if (_align_depth && is_depth_frame_arrived && is_color_frame_arrived) {
               RCLCPP_DEBUG(logger_, "publishAlignedDepthTopic(...)");
               publishAlignedDepthImg(frame, t);
@@ -1406,7 +1385,6 @@ private:
   rs2_extrinsics _depth2color_extrinsics;
 
   rs2::frameset _aligned_frameset;
-  std::chrono::steady_clock::time_point _color_begin; //270323 kangneoung
 };  // end class
 }  // namespace realsense_ros2_camera
 
