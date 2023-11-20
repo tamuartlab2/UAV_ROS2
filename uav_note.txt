@@ -1,0 +1,25 @@
+
+Packages:
+pip install dronekit
+pip install PyYAML mavproxy --user
+pip install haversine
+pip3 install pyserial
+sudo apt install ros-humble-tf-transformations
+pip3 install transforms3d
+
+
+
+dronekit modification:
+Find dronekit package location by enter:
+	pip show dronekit
+copy location line [dronekit location] then enter:
+	gedit [dronekit location]/dronekit/__init__.py
+Search "collections.MutableMapping" and change it to "collections.abc.MutableMapping"
+
+
+
+start SITL simulation:
+cd ~/ardupilot/ArduCopter
+sim_vehicle.py --console --map --out=udpbcast:127.0.0.1:14550
+
+
