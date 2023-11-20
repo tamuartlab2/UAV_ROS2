@@ -31,10 +31,10 @@
 namespace realsense_ros2_camera
 {
 const bool POINTCLOUD = false;
-const bool ALIGN_POINTCLOUD = true;
+const bool ALIGN_POINTCLOUD = false;
 const bool SYNC_FRAMES = true;
 
-const bool ALIGN_DEPTH = true;
+const bool ALIGN_DEPTH = false;
 
 const int DEPTH_WIDTH = 640;
 const int DEPTH_HEIGHT = 480;
@@ -45,27 +45,27 @@ const int INFRA1_HEIGHT = 480;
 const int INFRA2_WIDTH = 640;
 const int INFRA2_HEIGHT = 480;
 
-const int COLOR_WIDTH = 640;
-const int COLOR_HEIGHT = 480;
+const int COLOR_WIDTH = 1280;
+const int COLOR_HEIGHT = 720;
 
 const int FISHEYE_WIDTH = 640;
 const int FISHEYE_HEIGHT = 480;
 
 
-const int DEPTH_FPS = 30;
-const int INFRA1_FPS = 30;
-const int INFRA2_FPS = 30;
-const int COLOR_FPS = 30;
-const int FISHEYE_FPS = 30;
+const int DEPTH_FPS = 15;
+const int INFRA1_FPS = 15;
+const int INFRA2_FPS = 15;
+const int COLOR_FPS = 15;
+const int FISHEYE_FPS = 15;
 const int GYRO_FPS = 1000;
 const int ACCEL_FPS = 1000;
 
 
-const bool ENABLE_DEPTH = true;
+const bool ENABLE_DEPTH = false;
 const bool ENABLE_INFRA1 = false;
 const bool ENABLE_INFRA2 = false;
 const bool ENABLE_COLOR = true;
-const bool ENABLE_FISHEYE = true;
+const bool ENABLE_FISHEYE = false;
 const bool ENABLE_IMU = false;
 
 
