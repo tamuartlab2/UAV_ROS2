@@ -11,7 +11,7 @@ import haversine as hs
 # from haversine import Unit
 import tf_transformations
 
-takeoffHeight = 5.0    #m
+takeoffHeight = 20.0    #m
 set_ground_speed = 5.0    #m/s
 # connection_string = '127.0.0.1:14550'     #when connecting SITL simulation
 connection_string = '/dev/ttyACM0'           #Real vehicle
@@ -30,7 +30,7 @@ def arm_and_takeoff(targetHeight):
     vehicle.simple_takeoff(targetHeight)
     while True:
         print("Current Altitude: %s"%vehicle.location.global_relative_frame.alt)
-        if vehicle.location.global_relative_frame.alt>=.95*targetHeight:
+        if vehicle.location.global_relative_frame.alt>=.99*targetHeight:
             break
     print("Target altitude reached! Takeoff finished!")
 
@@ -70,6 +70,7 @@ class UAVPublisher(Node):
         #declare topics
         self.pose_pub = self.create_publisher(Pose, '/uav/pose', 10)
         self.mode_pub = self.create_publisher(String, '/uav/mode', 10)
+        self.battery_level_pub = self.create_publisher(Int16, '/uav/battery_level', 10)
         self.compass_pub = self.create_publisher(Int16, '/uav/compass', 10)
         timer_period = 0.5  # seconds, 2 Hz
         self.set_position_subscription = self.create_subscription(Pose, '/uav/set_pose', self.set_pose_callback, 10)
@@ -120,6 +121,15 @@ class UAVPublisher(Node):
         pose_msg = Pose()
         compass_msg = Int16()
         mode_msg = String()
+        battery_level_msg = Int16()
+                
+        battery_level_msg.data = vehicle.battery.level
+        if vehicle.battery.level < 60.0:
+            print("WARNING: Battery level is lower than 60%!")
+            if vehicle.battery.level < 35.0:
+                print("WARNING: Low battery! Switch to RTL mode! Please land the UAV after RTL!")
+                if vehicle.mode != 'RTL' and vehicle.mode != 'LAND':
+                    vehicle.mode = VehicleMode("RTL")
 
         pose_msg.position.x = vehicle.location.global_relative_frame.lat
         pose_msg.position.y = vehicle.location.global_relative_frame.lon
@@ -136,6 +146,7 @@ class UAVPublisher(Node):
 
         self.pose_pub.publish(pose_msg)
         self.compass_pub.publish(compass_msg)
+        self.battery_level_pub.publish(battery_level_msg)
         self.mode_pub.publish(mode_msg)
 
     def ypr_to_quaternion(self, yaw, pitch, roll):
